@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {DiscoveryService} from "./services/hue/discovery.service";
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,7 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'f1mvHueApp';
+
+  constructor(public discoveryService: DiscoveryService) {
+  }
 }
