@@ -26,7 +26,12 @@ export class AppComponent implements OnInit {
     this.f1mvService.flagChange.subscribe((flags: number[]) => {
       if (this.lightService.lights.length > 0) {
         for (let i = 0; i < 4; i++) {
-          this.lightService.flashFlag(this.lightService.lights[i], flags, 254);
+          if (flags === FlagsEnum.green) {
+            this.lightService.flashFlag(this.lightService.lights[i], flags, 254);
+          } else {
+            this.lightService.setLightColor(this.lightService.lights[i], flags, 254);
+
+          }
         }
       }
     });
