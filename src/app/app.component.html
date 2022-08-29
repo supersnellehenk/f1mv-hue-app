@@ -1,37 +1,66 @@
 <p>WIP</p>
-<div style="margin-bottom: 20px;">
+<div style="margin-bottom: 20px">
   <label>F1MV Url</label>
-  <input type="text" placeholder="f1mv url" [(ngModel)]="this.f1mvService.f1mvUrl">
+  <input
+    type="text"
+    placeholder="f1mv url"
+    [(ngModel)]="this.f1mvService.f1mvUrl" />
   <button (click)="this.discoveryService.getBridge()">Get Bridge</button>
-  <input type="text" placeholder="bridge ip" [(ngModel)]="this.discoveryService.bridgeIp">
-  <p *ngIf="discoveryService.bridgeIp">If the below throws an error about the certificate being invalid, go to <a
-    href="https://{{this.discoveryService.bridgeIp}}">your bridge</a> and trust it.</p>
-  <button *ngIf="this.isProd === false" (click)="this.discoveryService.bridgeIp = '192.168.1.22'">Set bridge 192.168.1.22</button>
+  <input
+    type="text"
+    placeholder="bridge ip"
+    [(ngModel)]="this.discoveryService.bridgeIp" />
+  <p *ngIf="discoveryService.bridgeIp">
+    If the below throws an error about the certificate being invalid, go to
+    <a href="https://{{ this.discoveryService.bridgeIp }}">your bridge</a> and
+    trust it.
+  </p>
+  <button
+    *ngIf="this.isProd === false"
+    (click)="this.discoveryService.bridgeIp = '192.168.1.22'">
+    Set bridge 192.168.1.22
+  </button>
 
-  <div style="margin-bottom: 20px;">
-    <button (click)="this.discoveryService.authorizeOnBridge()">Authorize</button>
+  <div style="margin-bottom: 20px">
+    <button (click)="this.discoveryService.authorizeOnBridge()">
+      Authorize
+    </button>
     {{ this.discoveryService.currStatus }}
   </div>
 
   <button (click)="this.lightService.getLights()">Get lights</button>
   <button (click)="this.lightService.flashAllFlag()">Flash all lights</button>
 
-  <div style="margin-top: 20px;">
+  <div style="margin-top: 20px">
     <button (click)="this.subToApi()">Sub to F1MV Timing</button>
+    <button (click)="this.destroy$.next(null)">Unsub from F1MV Timing</button>
     <p>This activates the light syncing.</p>
   </div>
 </div>
 
 <div *ngFor="let light of this.lightService.lights">
-  <button (click)="this.lightService.turnOnLight(light.id)">{{light.name}} On</button>
-  <button (click)="this.lightService.turnOffLight(light.id)">{{light.name}} Off</button>
-  <button (click)="this.lightService.setLightColor(light, this.white)">{{light.name}} Set Color White</button>
-  <button (click)="this.lightService.setLightColor(light, this.yellow, 254)">{{light.name}} Set Color Yellow</button>
-  <button (click)="this.lightService.flashFlag(light, this.yellow, 254)">{{light.name}} Flash flag</button>
+  <button (click)="this.lightService.turnOnLight(light.id)">
+    {{ light.name }} On
+  </button>
+  <button (click)="this.lightService.turnOffLight(light.id)">
+    {{ light.name }} Off
+  </button>
+  <button (click)="this.lightService.setLightColor(light, this.white)">
+    {{ light.name }} Set Color White
+  </button>
+  <button (click)="this.lightService.setLightColor(light, this.yellow, 254)">
+    {{ light.name }} Set Color Yellow
+  </button>
+  <button (click)="this.lightService.flashFlag(light, this.yellow, 254)">
+    {{ light.name }} Flash flag
+  </button>
 </div>
 
 <div *ngIf="this.lightService.lights.length > 4">
-  <p>You've got more than 4 lights. The Hue bridge can't keep up with the requests being sent, please switch to an
-    entertainment area. Limiting the app to using the first 4 lights only.</p>
+  <p>
+    You've got more than 4 lights. The Hue bridge can't keep up with the
+    requests being sent. This will be fixed when entertainment areas get
+    implemented. Limiting the app to using the first 4 lights only.
+  </p>
 </div>
 <pre><p>{{ this.lightService.lights | json }}</p></pre>
