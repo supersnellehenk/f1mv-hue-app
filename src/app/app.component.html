@@ -1,10 +1,12 @@
 <p>WIP</p>
 <div style="margin-bottom: 20px">
-  <label>F1MV Url</label>
-  <input
-    type="text"
-    placeholder="f1mv url"
-    [(ngModel)]="this.f1mvService.f1mvUrl" />
+  <label class="block">
+    <span class="block text-sm font-medium text-slate-700">F1MV Url</span>
+    <input
+      type="text"
+      placeholder="f1mv url"
+      [(ngModel)]="this.f1mvService.f1mvUrl" />
+  </label>
   <button (click)="this.discoveryService.getBridge()">Get Bridge</button>
   <input
     type="text"
@@ -55,6 +57,8 @@
     {{ light.name }} Flash flag
   </button>
 </div>
+
+<app-light></app-light>
 
 <div *ngIf="this.lightService.lights.length > 4">
   <p>
