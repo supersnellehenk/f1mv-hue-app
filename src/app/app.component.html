@@ -72,7 +72,7 @@
   <p>
     You've got more than 4 lights. The Hue bridge can't keep up with the
     requests being sent. This will be fixed when entertainment areas get
-    implemented. Limiting the app to using the first 4 lights only.
+    implemented. Limiting the app to using 4 lights only.
   </p>
 </div>
-<pre><p>{{ this.lightService.lights | json }}</p></pre>
+<pre *ngIf="!isProd"><p>{{ this.lightService.lights | json }}</p></pre>
