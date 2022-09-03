@@ -33,8 +33,7 @@ export class AppComponent implements OnInit {
         for (let i = 0; i < 4; i++) {
           if (flags === FlagsEnum.green) {
             // TODO: flash group
-            this.lightGroupService.setGroupColor(flags, 254);
-            // this.lightService.flashFlag(lights[i], flags, 254);
+            this.lightGroupService.flashGroup(flags, 254);
           } else {
             this.lightGroupService.setGroupColor(flags, 254);
           }

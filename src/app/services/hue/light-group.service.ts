@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { AuthorizationService } from './authorization.service';
 import { HttpClient } from '@angular/common/http';
 import { LightGroup } from './group';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
+import { FlagsEnum } from '../../shared/enum/flags.enum';
+import addSeconds from 'date-fns/addSeconds';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 export class LightGroupService {
   private selectedGroup: BehaviorSubject<LightGroup | null> =
     new BehaviorSubject<LightGroup | null>(null);
+  private revertToWhiteDate: Date | null = null;
 
   get group() {
     return this.selectedGroup.getValue();
@@ -22,7 +25,16 @@ export class LightGroupService {
   constructor(
     private discoveryService: AuthorizationService,
     private http: HttpClient
-  ) {}
+  ) {
+    const interval$ = interval(1000);
+    interval$.subscribe(() => {
+      if (this.revertToWhiteDate && this.revertToWhiteDate <= new Date()) {
+        this.revertToWhiteDate = null;
+
+        this.setGroupColor(FlagsEnum.white);
+      }
+    });
+  }
 
   public getGroups() {
     this.http
@@ -143,6 +155,7 @@ export class LightGroupService {
   }
 
   private deleteGroup() {
+    this.revertToWhiteDate = null;
     this.http
       .delete(
         `http://${
@@ -154,5 +167,10 @@ export class LightGroupService {
       .subscribe(() => {
         this.selectedGroup.next(null);
       });
+  }
+
+  flashGroup(flagColor: number[], brightness: number = 77) {
+    this.setGroupColor(flagColor, brightness);
+    this.revertToWhiteDate = addSeconds(new Date(), 5);
   }
 }
