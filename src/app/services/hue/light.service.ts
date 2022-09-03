@@ -6,6 +6,7 @@ import { Light } from './light';
 import { FlagsEnum } from '../../shared/enum/flags.enum';
 import addSeconds from 'date-fns/addSeconds';
 import { LightGroupService } from './light-group.service';
+import { F1mvService } from '../f1mv.service';
 
 @Injectable({
   providedIn: 'root',
@@ -18,27 +19,11 @@ export class LightService {
   constructor(
     private discoveryService: AuthorizationService,
     private lightGroupService: LightGroupService,
+    private f1mvService: F1mvService,
     private http: HttpClient
   ) {
     this.lightGroupService.group$.subscribe(group => {
       this.syncedLightsArray = group?.lights || [];
-    });
-
-    const interval$ = interval(1000);
-    interval$.subscribe(() => {
-      if (this.revertToWhiteDate && this.revertToWhiteDate <= new Date()) {
-        this.revertToWhiteDate = null;
-
-        // TODO: Fix group
-        // for (const lightIndex in this.getSyncedLights()) {
-        //   this.setLightColor(
-        //     this.getSyncedLights()[lightIndex],
-        //     FlagsEnum.white,
-        //     77
-        //   );
-        // }
-        // this.lightGroupService.
-      }
     });
   }
 
@@ -52,15 +37,17 @@ export class LightService {
         this.syncedLightsArray.indexOf(light.id),
         1
       );
+      this.setLightColor(light, FlagsEnum.white);
     } else {
+      this.setLightColor(
+        light,
+        this.f1mvService.flagChange.getValue(),
+        this.f1mvService.flagChange.getValue() === FlagsEnum.white ? 77 : 254
+      );
       this.syncedLightsArray.push(light.id);
     }
 
     this.lightGroupService.createGroup(this.syncedLightsArray);
-  }
-
-  public checkIfSynced(light: Light) {
-    return this.syncedLightsArray.includes(light.id);
   }
 
   public getSyncedLights() {
@@ -132,33 +119,5 @@ export class LightService {
       )
       .subscribe();
     this.revertToWhiteDate = null;
-  }
-
-  // TODO: Somehow deal with multiple changes within the timeout period
-  flashFlag(light: Light, color: number[], brightness: number = 77) {
-    this.http
-      .put(
-        `https://${
-          this.discoveryService.bridgeIp
-        }/api/${this.discoveryService.hueApiKey.getValue()}/lights/${
-          light.id
-        }/state`,
-        {
-          on: true,
-          xy: color,
-          bri: brightness,
-        }
-      )
-      .subscribe();
-
-    this.revertToWhiteDate = addSeconds(new Date(), 5);
-  }
-
-  flashAllFlag() {
-    for (const light in this.lights) {
-      if (this.lights.hasOwnProperty(light)) {
-        this.flashFlag(this.lights[light], FlagsEnum.green, 254);
-      }
-    }
   }
 }

@@ -30,13 +30,10 @@ export class AppComponent implements OnInit {
     this.f1mvService.flagChange.subscribe((flags: number[]) => {
       const lights = this.lightService.getSyncedLights();
       if (lights.length > 0) {
-        for (let i = 0; i < 4; i++) {
-          if (flags === FlagsEnum.green) {
-            // TODO: flash group
-            this.lightGroupService.flashGroup(flags, 254);
-          } else {
-            this.lightGroupService.setGroupColor(flags, 254);
-          }
+        if (flags === FlagsEnum.green) {
+          this.lightGroupService.flashGroup(flags, 254);
+        } else {
+          this.lightGroupService.setGroupColor(flags, 254);
         }
       }
     });
@@ -66,9 +63,14 @@ export class AppComponent implements OnInit {
 
   syncAllLights() {
     this.lightGroupService.editGroup(this.lightService.lights.map(l => l.id));
+    this.lightGroupService.setGroupColor(
+      this.f1mvService.flagChange.getValue(),
+      this.f1mvService.flagChange.getValue() === FlagsEnum.white ? 77 : 254
+    );
   }
 
   unsyncAllLights() {
+    this.lightGroupService.setGroupColor(FlagsEnum.white);
     this.lightGroupService.editGroup([]);
   }
 }
