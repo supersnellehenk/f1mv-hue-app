@@ -1,12 +1,23 @@
 <p>WIP</p>
 <div style="margin-bottom: 20px">
-  <label class="block">
-    <span class="block text-sm font-medium text-slate-700">F1MV Url</span>
-    <input
-      type="text"
-      placeholder="f1mv url"
-      [(ngModel)]="this.f1mvService.f1mvUrl" />
-  </label>
+  <form action="">
+    <mat-form-field appearance="standard">
+      <mat-label>F1MV Url</mat-label>
+      <input
+        matInput
+        type="text"
+        name="f1mvUrl"
+        [(ngModel)]="this.f1mvService.f1mvUrl" />
+      <button
+        *ngIf="this.f1mvService.f1mvUrl"
+        matSuffix
+        mat-icon-button
+        aria-label="Clear"
+        (click)="this.f1mvService.f1mvUrl = ''">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </form>
   <button mat-flat-button (click)="this.discoveryService.getBridge()">
     Get Bridge
   </button>
