@@ -5,31 +5,38 @@ import { BehaviorSubject, interval } from 'rxjs';
 import { Light } from './light';
 import { FlagsEnum } from '../../shared/enum/flags.enum';
 import addSeconds from 'date-fns/addSeconds';
+import { LightGroupService } from './light-group.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LightService {
   private lightsSubject = new BehaviorSubject<Light[]>([]);
-  private syncedLightsArray: Light[] = [];
+  private syncedLightsArray: string[] = [];
   private revertToWhiteDate: Date | null = null;
 
   constructor(
     private discoveryService: AuthorizationService,
+    private lightGroupService: LightGroupService,
     private http: HttpClient
   ) {
+    this.lightGroupService.group$.subscribe(group => {
+      this.syncedLightsArray = group?.lights || [];
+    });
+
     const interval$ = interval(1000);
     interval$.subscribe(() => {
       if (this.revertToWhiteDate && this.revertToWhiteDate <= new Date()) {
         this.revertToWhiteDate = null;
 
-        for (const lightIndex in this.getSyncedLights()) {
-          this.setLightColor(
-            this.getSyncedLights()[lightIndex],
-            FlagsEnum.white,
-            77
-          );
-        }
+        // TODO: Fix group
+        // for (const lightIndex in this.getSyncedLights()) {
+        //   this.setLightColor(
+        //     this.getSyncedLights()[lightIndex],
+        //     FlagsEnum.white,
+        //     77
+        //   );
+        // }
       }
     });
   }
@@ -39,15 +46,20 @@ export class LightService {
   }
 
   public toggleSync(light: Light) {
-    if (this.syncedLightsArray.includes(light)) {
-      this.syncedLightsArray.splice(this.syncedLightsArray.indexOf(light), 1);
+    if (this.lightGroupService.group?.lights.includes(light.id)) {
+      this.syncedLightsArray.splice(
+        this.syncedLightsArray.indexOf(light.id),
+        1
+      );
     } else {
-      this.syncedLightsArray.push(light);
+      this.syncedLightsArray.push(light.id);
     }
+
+    this.lightGroupService.createGroup(this.syncedLightsArray);
   }
 
   public checkIfSynced(light: Light) {
-    return this.syncedLightsArray.includes(light);
+    return this.syncedLightsArray.includes(light.id);
   }
 
   public getSyncedLights() {

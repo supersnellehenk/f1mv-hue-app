@@ -5,6 +5,7 @@ import { FlagsEnum } from './shared/enum/flags.enum';
 import { F1mvService } from './services/f1mv.service';
 import { interval, Subject, takeUntil } from 'rxjs';
 import { environment } from '../environments/environment';
+import { LightGroupService } from './services/hue/light-group.service';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
   constructor(
     public discoveryService: AuthorizationService,
     public lightService: LightService,
+    public lightGroupService: LightGroupService,
     public f1mvService: F1mvService
   ) {}
 
@@ -30,9 +32,11 @@ export class AppComponent implements OnInit {
       if (lights.length > 0) {
         for (let i = 0; i < 4; i++) {
           if (flags === FlagsEnum.green) {
-            this.lightService.flashFlag(lights[i], flags, 254);
+            // TODO: flash group
+            this.lightGroupService.setGroupColor(flags, 254);
+            // this.lightService.flashFlag(lights[i], flags, 254);
           } else {
-            this.lightService.setLightColor(lights[i], flags, 254);
+            this.lightGroupService.setGroupColor(flags, 254);
           }
         }
       }
@@ -54,5 +58,18 @@ export class AppComponent implements OnInit {
 
   setLocalStorage(key: string, value: string) {
     localStorage.setItem(key, value);
+  }
+
+  getLights() {
+    this.lightService.getLights();
+    this.lightGroupService.getGroups();
+  }
+
+  syncAllLights() {
+    this.lightGroupService.editGroup(this.lightService.lights.map(l => l.id));
+  }
+
+  unsyncAllLights() {
+    this.lightGroupService.editGroup([]);
   }
 }

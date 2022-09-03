@@ -1,13 +1,8 @@
 <div class="light">
   <div class="header">
     <p>{{ light.name }}</p>
-    <button
-      mat-flat-button
-      (click)="toggleSync()"
-      [disabled]="
-        !isSynced() && this.lightService.getSyncedLights().length >= 4
-      ">
-      {{ this.isSynced() ? 'Unsync' : 'Sync' }}
+    <button mat-flat-button (click)="toggleSync()">
+      {{ this.isSynced ? 'Unsync' : 'Sync' }}
     </button>
   </div>
   <div class="body">
