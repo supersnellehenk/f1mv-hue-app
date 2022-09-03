@@ -23,6 +23,7 @@
       matInput
       type="text"
       name="f1mvUrl"
+      (ngModelChange)="this.setLocalStorage('f1mvUrl', $event)"
       [(ngModel)]="this.f1mvService.f1mvUrl" />
     <button
       *ngIf="this.f1mvService.f1mvUrl"
@@ -39,6 +40,7 @@
       matInput
       type="text"
       name="BridgeIp"
+      (ngModelChange)="this.setLocalStorage('bridgeIp', $event)"
       [(ngModel)]="this.discoveryService.bridgeIp" />
     <button
       *ngIf="this.f1mvService.f1mvUrl"

@@ -13,11 +13,13 @@ import {
   providedIn: 'root',
 })
 export class F1mvService {
-  public f1mvUrl = 'http://localhost:10101';
+  public f1mvUrl = '';
   public flagChange = new BehaviorSubject<number[]>(FlagsEnum.green);
   private lastMessage: { Status: string; Message: string } | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.f1mvUrl = localStorage.getItem('f1mvUrl') || 'http://localhost:10101';
+  }
 
   public consumeApi() {
     return this.http.get(`${this.f1mvUrl}/api/v1/live-timing/TrackStatus`).pipe(

@@ -51,4 +51,8 @@ export class AppComponent implements OnInit {
       this.f1mvService.consumeApi().subscribe();
     });
   }
+
+  setLocalStorage(key: string, value: string) {
+    localStorage.setItem(key, value);
+  }
 }
