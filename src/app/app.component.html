@@ -82,14 +82,14 @@
 
   <button
     mat-flat-button
-    (click)="this.lightService.getLights()"
+    (click)="this.getLights()"
     color="primary"
     [disabled]="this.discoveryService.hueApiKey.value === ''"
-    style="margin-right: 8px">
+    style="margin-right: 8px; margin-bottom: 20px">
     Get lights
   </button>
 
-  <div style="margin-top: 20px">
+  <div style="margin-bottom: 20px">
     <button
       mat-flat-button
       color="primary"
@@ -99,13 +99,20 @@
       {{ this.isSubbed ? 'Unsub from' : 'Sub to' }} F1MV Timing
     </button>
   </div>
-</div>
-<div *ngIf="this.lightService.lights.length > 4">
-  <p>
-    You've got more than 4 lights. The Hue bridge can't keep up with the
-    requests being sent. This will be fixed when entertainment areas get
-    implemented. Limiting the app to using 4 lights only.
-  </p>
+  <div class="sync">
+    <button
+      mat-flat-button
+      (click)="this.syncAllLights()"
+      [disabled]="this.lightService.lights.length === 0">
+      Sync all lights
+    </button>
+    <button
+      mat-flat-button
+      (click)="this.unsyncAllLights()"
+      [disabled]="this.lightService.lights.length === 0">
+      Unsync all lights
+    </button>
+  </div>
 </div>
 <div class="light-container">
   <app-light
