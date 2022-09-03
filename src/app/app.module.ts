@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { LightComponent } from './components/light/light.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [AppComponent, LightComponent],
@@ -18,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
     FormsModule,
     BrowserAnimationsModule,
     MatButtonModule,
+    FontAwesomeModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

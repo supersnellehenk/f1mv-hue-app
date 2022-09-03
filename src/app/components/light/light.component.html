@@ -1,10 +1,41 @@
-<div class="light p-2">
-  <div class="header flex justify-between">
-    <p>LIGHT NAME</p>
-    <button mat-flat-button>Sync</button>
+<div class="light">
+  <div class="header">
+    <p>{{ light.name }}</p>
+    <button
+      mat-flat-button
+      (click)="toggleSync()"
+      [disabled]="
+        !isSynced() && this.lightService.getSyncedLights().length >= 4
+      ">
+      {{ this.isSynced() ? 'Unsync' : 'Sync' }}
+    </button>
   </div>
   <div class="body">
-    <div class="left">BULB</div>
-    <div class="right">buttons</div>
+    <!--    <div class="left"><fa-icon [icon]="faLightbulb" size="10x"></fa-icon></div>-->
+    <div class="right">
+      <button mat-flat-button (click)="this.lightService.turnOnLight(light.id)">
+        On
+      </button>
+      <button
+        mat-flat-button
+        (click)="this.lightService.turnOffLight(light.id)">
+        Off
+      </button>
+      <button
+        mat-flat-button
+        (click)="this.lightService.setLightColor(light, this.white)">
+        Set Color White
+      </button>
+      <button
+        mat-flat-button
+        (click)="this.lightService.setLightColor(light, this.yellow, 254)">
+        Set Color Yellow
+      </button>
+      <button
+        mat-flat-button
+        (click)="this.lightService.flashFlag(light, this.yellow, 254)">
+        Flash flag Yellow
+      </button>
+    </div>
   </div>
 </div>

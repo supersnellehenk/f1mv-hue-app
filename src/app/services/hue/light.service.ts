@@ -10,15 +10,32 @@ import { FlagsEnum } from '../../shared/enum/flags.enum';
 })
 export class LightService {
   private lightsSubject = new BehaviorSubject<Light[]>([]);
-
-  get lights() {
-    return this.lightsSubject.getValue();
-  }
+  private syncedLightsArray: Light[] = [];
 
   constructor(
     private discoveryService: AuthorizationService,
     private http: HttpClient
   ) {}
+
+  get lights() {
+    return this.lightsSubject.getValue();
+  }
+
+  public toggleSync(light: Light) {
+    if (this.syncedLightsArray.includes(light)) {
+      this.syncedLightsArray.splice(this.syncedLightsArray.indexOf(light), 1);
+    } else {
+      this.syncedLightsArray.push(light);
+    }
+  }
+
+  public checkIfSynced(light: Light) {
+    return this.syncedLightsArray.includes(light);
+  }
+
+  public getSyncedLights() {
+    return this.syncedLightsArray;
+  }
 
   public getLights() {
     this.http
