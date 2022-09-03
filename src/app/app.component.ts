@@ -63,10 +63,15 @@ export class AppComponent implements OnInit {
 
   syncAllLights() {
     this.lightGroupService.editGroup(this.lightService.lights.map(l => l.id));
-    this.lightGroupService.setGroupColor(
-      this.f1mvService.flagChange.getValue(),
-      this.f1mvService.flagChange.getValue() === FlagsEnum.white ? 77 : 254
-    );
+    const flag = this.f1mvService.flagChange.getValue();
+    if (flag === FlagsEnum.green) {
+      this.lightGroupService.flashGroup(flag, 254);
+    } else {
+      this.lightGroupService.setGroupColor(
+        flag,
+        this.f1mvService.flagChange.getValue() === FlagsEnum.white ? 77 : 254
+      );
+    }
   }
 
   unsyncAllLights() {
