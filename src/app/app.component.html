@@ -1,50 +1,75 @@
-<p>WIP</p>
+<p>Before using this, get a CORS Unblock extension for your browser.</p>
+<p>
+  All I've verified is Chrome.
+  <a
+    href="https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino"
+    target="_blank"
+    >This one.</a
+  >
+</p>
 <div style="margin-bottom: 20px">
-  <form action="">
-    <mat-form-field appearance="standard">
-      <mat-label>F1MV Url</mat-label>
-      <input
-        matInput
-        type="text"
-        name="f1mvUrl"
-        [(ngModel)]="this.f1mvService.f1mvUrl" />
-      <button
-        *ngIf="this.f1mvService.f1mvUrl"
-        matSuffix
-        mat-icon-button
-        aria-label="Clear"
-        (click)="this.f1mvService.f1mvUrl = ''">
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-  </form>
-  <button mat-flat-button (click)="this.discoveryService.getBridge()">
-    Get Bridge
-  </button>
-  <input
-    type="text"
-    placeholder="bridge ip"
-    [(ngModel)]="this.discoveryService.bridgeIp" />
-  <p *ngIf="discoveryService.bridgeIp">
-    If the below throws an error about the certificate being invalid, go to
-    <a href="https://{{ this.discoveryService.bridgeIp }}">your bridge</a> and
-    trust it.
-  </p>
+  <mat-form-field appearance="standard" style="margin-right: 8px">
+    <mat-label>F1MV Url</mat-label>
+    <input
+      matInput
+      type="text"
+      name="f1mvUrl"
+      [(ngModel)]="this.f1mvService.f1mvUrl" />
+    <button
+      *ngIf="this.f1mvService.f1mvUrl"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="this.f1mvService.f1mvUrl = ''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <mat-form-field appearance="standard" style="margin-right: 8px">
+    <mat-label>Bridge IP</mat-label>
+    <input
+      matInput
+      type="text"
+      name="BridgeIp"
+      [(ngModel)]="this.discoveryService.bridgeIp" />
+    <button
+      *ngIf="this.f1mvService.f1mvUrl"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="this.discoveryService.bridgeIp = ''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
   <button
     mat-flat-button
     *ngIf="this.isProd === false"
     (click)="this.discoveryService.bridgeIp = '192.168.1.22'">
     Set bridge 192.168.1.22
   </button>
+  <button mat-flat-button (click)="this.discoveryService.getBridge()">
+    Get Bridge
+  </button>
 
+  <p *ngIf="discoveryService.bridgeIp">
+    If the below throws an error about the certificate being invalid, go to
+    <a href="https://{{ this.discoveryService.bridgeIp }}">your bridge</a> and
+    trust it.
+  </p>
   <div style="margin-bottom: 20px">
-    <button mat-flat-button (click)="this.discoveryService.authorizeOnBridge()">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="this.discoveryService.authorizeOnBridge()">
       Authorize
     </button>
     {{ this.discoveryService.currStatus }}
   </div>
 
-  <button mat-flat-button (click)="this.lightService.getLights()">
+  <button
+    mat-flat-button
+    (click)="this.lightService.getLights()"
+    color="primary"
+    style="margin-right: 8px">
     Get lights
   </button>
   <button mat-flat-button (click)="this.lightService.flashAllFlag()">
@@ -52,13 +77,16 @@
   </button>
 
   <div style="margin-top: 20px">
-    <button mat-flat-button (click)="this.subToApi()">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="this.subToApi()"
+      style="margin-right: 8px">
       Sub to F1MV Timing
     </button>
     <button mat-flat-button (click)="this.destroy$.next(null)">
       Unsub from F1MV Timing
     </button>
-    <p>This activates the light syncing.</p>
   </div>
 </div>
 
