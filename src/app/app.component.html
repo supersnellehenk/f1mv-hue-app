@@ -42,11 +42,14 @@
   </mat-form-field>
   <button
     mat-flat-button
-    *ngIf="this.isProd === false"
+    *ngIf="!isProd"
     (click)="this.discoveryService.bridgeIp = '192.168.1.22'">
     Set bridge 192.168.1.22
   </button>
-  <button mat-flat-button (click)="this.discoveryService.getBridge()">
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="this.discoveryService.getBridge()">
     Get Bridge
   </button>
 
@@ -89,18 +92,16 @@
     </button>
   </div>
 </div>
-
-<div class="light-container">
-  <app-light
-    *ngFor="let light of this.lightService.lights"
-    [light]="light"></app-light>
-</div>
-
 <div *ngIf="this.lightService.lights.length > 4">
   <p>
     You've got more than 4 lights. The Hue bridge can't keep up with the
     requests being sent. This will be fixed when entertainment areas get
     implemented. Limiting the app to using 4 lights only.
   </p>
+</div>
+<div class="light-container">
+  <app-light
+    *ngFor="let light of this.lightService.lights"
+    [light]="light"></app-light>
 </div>
 <pre *ngIf="!isProd"><p>{{ this.lightService.lights | json }}</p></pre>
