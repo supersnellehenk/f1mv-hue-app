@@ -11,7 +11,9 @@ import { FlagsEnum } from '../../shared/enum/flags.enum';
 })
 export class LightComponent {
   public faLightbulb = faLightbulb;
+  public green = FlagsEnum.green;
   public yellow = FlagsEnum.yellow;
+  public red = FlagsEnum.red;
   public white = FlagsEnum.white;
 
   @Input() light!: Light;

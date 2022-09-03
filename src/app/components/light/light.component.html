@@ -28,14 +28,22 @@
       </button>
       <button
         mat-flat-button
+        (click)="this.lightService.setLightColor(light, this.green, 254)">
+        Set Color Green
+      </button>
+      <button
+        mat-flat-button
         (click)="this.lightService.setLightColor(light, this.yellow, 254)">
         Set Color Yellow
       </button>
       <button
         mat-flat-button
-        (click)="this.lightService.flashFlag(light, this.yellow, 254)">
-        Flash flag Yellow
+        (click)="this.lightService.setLightColor(light, this.red, 254)">
+        Set Color Red
       </button>
     </div>
+  </div>
+  <div class="footer">
+    <p>Light will go to full brightness if flag is shown.</p>
   </div>
 </div>
