@@ -1,30 +1,115 @@
-<p>WIP</p>
-<div style="margin-bottom: 20px;">
-  <button (click)="this.discoveryService.getBridge()">Get Bridge</button>
-  <input type="text" placeholder="bridge ip" [(ngModel)]="this.discoveryService.bridgeIp">
-  <p *ngIf="discoveryService.bridgeIp">If the below throws an error about the certificate being invalid, go to <a
-    href="https://{{this.discoveryService.bridgeIp}}">your bridge</a> and trust it.</p>
-  <button *ngIf="this.isProd === false" (click)="this.discoveryService.bridgeIp = '192.168.1.22'">Set bridge 192.168.1.22</button>
-  <div style="margin-bottom: 20px;">
-    <button (click)="this.discoveryService.authorizeOnBridge()">Authorize</button>
+<p>Before using this, get a CORS Unblock extension for your browser.</p>
+<p>
+  All I've verified is Chrome.
+  <a
+    href="https://chrome.google.com/webstore/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino"
+    target="_blank"
+    >This one.</a
+  >
+</p>
+<p>
+  Side note: your browser will say this page is unsecure. This is because it's
+  communicating with the HTTP API of F1MV, which is unsecured. This is not a
+  problem. Everything happens on your computer.
+</p>
+<p>
+  Lights will revert back to the 'dimmed' scene color/brightness 5 seconds after
+  the green flag.
+</p>
+<div style="margin-bottom: 20px">
+  <mat-form-field appearance="standard" style="margin-right: 8px">
+    <mat-label>F1MV Url</mat-label>
+    <input
+      matInput
+      type="text"
+      name="f1mvUrl"
+      (ngModelChange)="this.setLocalStorage('f1mvUrl', $event)"
+      [(ngModel)]="this.f1mvService.f1mvUrl" />
+    <button
+      *ngIf="this.f1mvService.f1mvUrl"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="this.f1mvService.f1mvUrl = ''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <mat-form-field appearance="standard" style="margin-right: 8px">
+    <mat-label>Bridge IP</mat-label>
+    <input
+      matInput
+      type="text"
+      name="BridgeIp"
+      (ngModelChange)="this.setLocalStorage('bridgeIp', $event)"
+      [(ngModel)]="this.discoveryService.bridgeIp" />
+    <button
+      *ngIf="this.f1mvService.f1mvUrl"
+      matSuffix
+      mat-icon-button
+      aria-label="Clear"
+      (click)="this.discoveryService.bridgeIp = ''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <button
+    mat-flat-button
+    *ngIf="!isProd"
+    (click)="this.discoveryService.bridgeIp = '192.168.1.22'">
+    Set bridge 192.168.1.22
+  </button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="this.discoveryService.getBridge()">
+    Get Bridge
+  </button>
+
+  <p *ngIf="discoveryService.bridgeIp">
+    If the below throws an error about the certificate being invalid, go to
+    <a href="https://{{ this.discoveryService.bridgeIp }}">your bridge</a> and
+    trust it.
+  </p>
+  <div style="margin-bottom: 20px">
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="!this.discoveryService.bridgeIp"
+      (click)="this.discoveryService.authorizeOnBridge()">
+      Authorize
+    </button>
     {{ this.discoveryService.currStatus }}
   </div>
-  <button (click)="this.lightService.getLights()">Get lights</button>
-  <button (click)="this.lightService.flashAllFlag()">Flash all lights</button>
-  <div style="margin-top: 20px;">
-    <button (click)="this.subToApi()">Sub to F1MV Timing</button>
-    <p>This activates the light syncing.</p>
+
+  <button
+    mat-flat-button
+    (click)="this.lightService.getLights()"
+    color="primary"
+    [disabled]="this.discoveryService.hueApiKey.value === ''"
+    style="margin-right: 8px">
+    Get lights
+  </button>
+
+  <div style="margin-top: 20px">
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="this.lightService.lights.length === 0"
+      (click)="isSubbed ? this.unsubToApi() : this.subToApi()"
+      style="margin-right: 8px">
+      {{ this.isSubbed ? 'Unsub from' : 'Sub to' }} F1MV Timing
+    </button>
   </div>
 </div>
-<div *ngFor="let light of this.lightService.lights">
-  <button (click)="this.lightService.turnOnLight(light.id)">{{light.name}} On</button>
-  <button (click)="this.lightService.turnOffLight(light.id)">{{light.name}} Off</button>
-  <button (click)="this.lightService.setLightColor(light, this.white)">{{light.name}} Set Color White</button>
-  <button (click)="this.lightService.setLightColor(light, this.yellow, 254)">{{light.name}} Set Color Yellow</button>
-  <button (click)="this.lightService.flashFlag(light, this.yellow, 254)">{{light.name}} Flash flag</button>
-</div>
 <div *ngIf="this.lightService.lights.length > 4">
-  <p>You've got more than 4 lights. The Hue bridge can't keep up with the requests being sent, please switch to an
-    entertainment area. Limiting the app to using the first 4 lights only.</p>
+  <p>
+    You've got more than 4 lights. The Hue bridge can't keep up with the
+    requests being sent. This will be fixed when entertainment areas get
+    implemented. Limiting the app to using 4 lights only.
+  </p>
 </div>
-<pre><p>{{ this.lightService.lights | json }}</p></pre>
+<div class="light-container">
+  <app-light
+    *ngFor="let light of this.lightService.lights"
+    [light]="light"></app-light>
+</div>
+<pre *ngIf="!isProd"><p>{{ this.lightService.lights | json }}</p></pre>

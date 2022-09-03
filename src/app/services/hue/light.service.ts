@@ -1,75 +1,144 @@
-import {Injectable} from "@angular/core";
-import {AuthorizationService} from "./authorization.service";
-import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject} from "rxjs";
-import {Light} from "./light";
-import {FlagsEnum} from "../../shared/enum/flags.enum";
+import { Injectable } from '@angular/core';
+import { AuthorizationService } from './authorization.service';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, interval } from 'rxjs';
+import { Light } from './light';
+import { FlagsEnum } from '../../shared/enum/flags.enum';
+import addSeconds from 'date-fns/addSeconds';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root',
 })
 export class LightService {
   private lightsSubject = new BehaviorSubject<Light[]>([]);
+  private syncedLightsArray: Light[] = [];
+  private revertToWhiteDate: Date | null = null;
+
+  constructor(
+    private discoveryService: AuthorizationService,
+    private http: HttpClient
+  ) {
+    const interval$ = interval(1000);
+    interval$.subscribe(() => {
+      if (this.revertToWhiteDate && this.revertToWhiteDate <= new Date()) {
+        this.revertToWhiteDate = null;
+
+        for (const lightIndex in this.getSyncedLights()) {
+          this.setLightColor(
+            this.getSyncedLights()[lightIndex],
+            FlagsEnum.white,
+            77
+          );
+        }
+      }
+    });
+  }
 
   get lights() {
     return this.lightsSubject.getValue();
   }
 
-  constructor(private discoveryService: AuthorizationService, private http: HttpClient) {
+  public toggleSync(light: Light) {
+    if (this.syncedLightsArray.includes(light)) {
+      this.syncedLightsArray.splice(this.syncedLightsArray.indexOf(light), 1);
+    } else {
+      this.syncedLightsArray.push(light);
+    }
+  }
+
+  public checkIfSynced(light: Light) {
+    return this.syncedLightsArray.includes(light);
+  }
+
+  public getSyncedLights() {
+    return this.syncedLightsArray;
   }
 
   public getLights() {
-    this.http.get(`https://${this.discoveryService.bridgeIp}/api/${this.discoveryService.hueApiKey.getValue()}/lights`).subscribe((resp: Object) => {
-      const respConverted = resp as Light[];
-      const lightsArray = [];
-      for (const respConvertedKey in resp) {
-        if (respConverted.hasOwnProperty(respConvertedKey)) {
-          // @ts-ignore
-          const light = resp[respConvertedKey] as Light;
-          light.id = respConvertedKey;
-          lightsArray.push(light);
+    this.http
+      .get(
+        `https://${
+          this.discoveryService.bridgeIp
+        }/api/${this.discoveryService.hueApiKey.getValue()}/lights`
+      )
+      .subscribe((resp: Object) => {
+        const respConverted = resp as Light[];
+        const lightsArray = [];
+        for (const respConvertedKey in resp) {
+          if (respConverted.hasOwnProperty(respConvertedKey)) {
+            // @ts-ignore
+            const light = resp[respConvertedKey] as Light;
+            light.id = respConvertedKey;
+            lightsArray.push(light);
+          }
         }
-      }
-      this.lightsSubject.next(lightsArray);
-    })
+        this.lightsSubject.next(lightsArray);
+      });
   }
 
   turnOnLight(id: string) {
-    this.http.put(`https://${this.discoveryService.bridgeIp}/api/${this.discoveryService.hueApiKey.getValue()}/lights/${id}/state`, {
-      "on": true
-    }).subscribe();
+    this.http
+      .put(
+        `https://${
+          this.discoveryService.bridgeIp
+        }/api/${this.discoveryService.hueApiKey.getValue()}/lights/${id}/state`,
+        {
+          on: true,
+        }
+      )
+      .subscribe();
   }
 
   turnOffLight(id: string) {
-    this.http.put(`https://${this.discoveryService.bridgeIp}/api/${this.discoveryService.hueApiKey.getValue()}/lights/${id}/state`, {
-      "on": false
-    }).subscribe();
+    this.http
+      .put(
+        `https://${
+          this.discoveryService.bridgeIp
+        }/api/${this.discoveryService.hueApiKey.getValue()}/lights/${id}/state`,
+        {
+          on: false,
+        }
+      )
+      .subscribe();
   }
 
   // brightness is 0-254
   setLightColor(light: Light, color: number[], brightness: number = 77) {
-    this.http.put(`https://${this.discoveryService.bridgeIp}/api/${this.discoveryService.hueApiKey.getValue()}/lights/${light.id}/state`, {
-      "on": true,
-      "xy": color,
-      "bri": brightness,
-    }).subscribe();
+    this.http
+      .put(
+        `https://${
+          this.discoveryService.bridgeIp
+        }/api/${this.discoveryService.hueApiKey.getValue()}/lights/${
+          light.id
+        }/state`,
+        {
+          on: true,
+          xy: color,
+          bri: brightness,
+        }
+      )
+      .subscribe();
+    this.revertToWhiteDate = null;
   }
 
   // TODO: Somehow deal with multiple changes within the timeout period
   flashFlag(light: Light, color: number[], brightness: number = 77) {
-    this.http.put(`https://${this.discoveryService.bridgeIp}/api/${this.discoveryService.hueApiKey.getValue()}/lights/${light.id}/state`, {
-      "on": true,
-      "xy": color,
-      "bri": brightness,
-    }).subscribe();
+    this.http
+      .put(
+        `https://${
+          this.discoveryService.bridgeIp
+        }/api/${this.discoveryService.hueApiKey.getValue()}/lights/${
+          light.id
+        }/state`,
+        {
+          on: true,
+          xy: color,
+          bri: brightness,
+        }
+      )
+      .subscribe();
 
-    setTimeout(() => {
-      this.http.put(`https://${this.discoveryService.bridgeIp}/api/${this.discoveryService.hueApiKey.getValue()}/lights/${light.id}/state`, {
-        "on": true,
-        "xy": FlagsEnum.white,
-        "bri": 77
-      }).subscribe();
-    }, 5000);
+    this.revertToWhiteDate = addSeconds(new Date(), 5);
   }
 
   flashAllFlag() {

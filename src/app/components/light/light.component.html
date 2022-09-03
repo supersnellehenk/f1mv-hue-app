@@ -1,0 +1,49 @@
+<div class="light">
+  <div class="header">
+    <p>{{ light.name }}</p>
+    <button
+      mat-flat-button
+      (click)="toggleSync()"
+      [disabled]="
+        !isSynced() && this.lightService.getSyncedLights().length >= 4
+      ">
+      {{ this.isSynced() ? 'Unsync' : 'Sync' }}
+    </button>
+  </div>
+  <div class="body">
+    <!--    <div class="left"><fa-icon [icon]="faLightbulb" size="10x"></fa-icon></div>-->
+    <div class="right">
+      <button mat-flat-button (click)="this.lightService.turnOnLight(light.id)">
+        On
+      </button>
+      <button
+        mat-flat-button
+        (click)="this.lightService.turnOffLight(light.id)">
+        Off
+      </button>
+      <button
+        mat-flat-button
+        (click)="this.lightService.setLightColor(light, this.white)">
+        Set Color White
+      </button>
+      <button
+        mat-flat-button
+        (click)="this.lightService.setLightColor(light, this.green, 254)">
+        Set Color Green
+      </button>
+      <button
+        mat-flat-button
+        (click)="this.lightService.setLightColor(light, this.yellow, 254)">
+        Set Color Yellow
+      </button>
+      <button
+        mat-flat-button
+        (click)="this.lightService.setLightColor(light, this.red, 254)">
+        Set Color Red
+      </button>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Light will go to full brightness if flag is shown.</p>
+  </div>
+</div>

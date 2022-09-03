@@ -1,32 +1,43 @@
-import {HttpClient} from "@angular/common/http";
-import {BehaviorSubject, tap} from "rxjs";
-import {Injectable} from "@angular/core";
-import {FlagsEnum} from "../shared/enum/flags.enum";
-import {F1mvToFlagsEnum} from "../shared/enum/f1mvToFlags.enum";
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, tap } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { FlagsEnum } from '../shared/enum/flags.enum';
+import {
+  Flag,
+  flagToHueColorMapping,
+  TrackStatus,
+  trackStatusToFlagMapping,
+} from '../shared/enum/f1mvToFlags';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root',
 })
 export class F1mvService {
-  private f1mvUrl = "http://localhost:10101/api/v1/live-timing/RaceControlMessages";
+  public f1mvUrl = '';
   public flagChange = new BehaviorSubject<number[]>(FlagsEnum.green);
-  private lastMessage = null;
+  private lastMessage: { Status: string; Message: string } | null = null;
 
   constructor(private http: HttpClient) {
+    this.f1mvUrl = localStorage.getItem('f1mvUrl') || 'http://localhost:10101';
   }
 
   public consumeApi() {
-    return this.http.get(this.f1mvUrl).pipe(tap((resp: any) => {
-      const message = resp.Messages.filter((message: { Category: string; Flag: string; }) => message && message.Category === "Flag").reverse()[0];
+    return this.http.get(`${this.f1mvUrl}/api/v1/live-timing/TrackStatus`).pipe(
+      tap((resp: any) => {
+        const message = resp as { Status: string; Message: TrackStatus };
 
-      if (JSON.stringify(message) !== JSON.stringify(this.lastMessage)) {
-        this.lastMessage = message;
-        const keys = Object.keys(F1mvToFlagsEnum).filter((key: string) => message && key === message.Flag);
-        if (keys.length === 1) {
-          // @ts-ignore
-          this.flagChange.next(F1mvToFlagsEnum[keys[0]]);
+        if (JSON.stringify(message) !== JSON.stringify(this.lastMessage)) {
+          if (message.Message in trackStatusToFlagMapping) {
+            const flag: Flag = trackStatusToFlagMapping[message.Message];
+            const flagColor: number[] = flagToHueColorMapping[flag];
+            this.flagChange.next(flagColor);
+          } else if (!this.lastMessage) {
+            this.flagChange.next(FlagsEnum.yellow);
+          }
+
+          this.lastMessage = message;
         }
-      }
-    }));
+      })
+    );
   }
 }
