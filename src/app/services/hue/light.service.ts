@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AuthorizationService } from './authorization.service';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { Light } from './light';
 import { FlagsEnum } from '../../shared/enum/flags.enum';
+import addSeconds from 'date-fns/addSeconds';
 
 @Injectable({
   providedIn: 'root',
@@ -11,11 +12,27 @@ import { FlagsEnum } from '../../shared/enum/flags.enum';
 export class LightService {
   private lightsSubject = new BehaviorSubject<Light[]>([]);
   private syncedLightsArray: Light[] = [];
+  private revertToWhiteDate: Date | null = null;
 
   constructor(
     private discoveryService: AuthorizationService,
     private http: HttpClient
-  ) {}
+  ) {
+    const interval$ = interval(1000);
+    interval$.subscribe(() => {
+      if (this.revertToWhiteDate && this.revertToWhiteDate <= new Date()) {
+        this.revertToWhiteDate = null;
+
+        for (const lightIndex in this.getSyncedLights()) {
+          this.setLightColor(
+            this.getSyncedLights()[lightIndex],
+            FlagsEnum.white,
+            77
+          );
+        }
+      }
+    });
+  }
 
   get lights() {
     return this.lightsSubject.getValue();
@@ -101,6 +118,7 @@ export class LightService {
         }
       )
       .subscribe();
+    this.revertToWhiteDate = null;
   }
 
   // TODO: Somehow deal with multiple changes within the timeout period
@@ -120,22 +138,7 @@ export class LightService {
       )
       .subscribe();
 
-    setTimeout(() => {
-      this.http
-        .put(
-          `https://${
-            this.discoveryService.bridgeIp
-          }/api/${this.discoveryService.hueApiKey.getValue()}/lights/${
-            light.id
-          }/state`,
-          {
-            on: true,
-            xy: FlagsEnum.white,
-            bri: 77,
-          }
-        )
-        .subscribe();
-    }, 5000);
+    this.revertToWhiteDate = addSeconds(new Date(), 5);
   }
 
   flashAllFlag() {

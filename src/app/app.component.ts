@@ -15,7 +15,8 @@ export class AppComponent implements OnInit {
   title = 'f1mvHueApp';
 
   public isProd = environment.production;
-  public destroy$ = new Subject<null>();
+  public destroy$ = new Subject<void>();
+  public isSubbed = false;
 
   constructor(
     public discoveryService: AuthorizationService,
@@ -38,7 +39,13 @@ export class AppComponent implements OnInit {
     });
   }
 
+  public unsubToApi() {
+    this.isSubbed = false;
+    this.destroy$.next();
+  }
+
   public subToApi() {
+    this.isSubbed = true;
     const interval$ = interval(200);
     interval$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.f1mvService.consumeApi().subscribe();
