@@ -47,6 +47,12 @@ export class LightService {
       this.syncedLightsArray.push(light.id);
     }
 
+    if (this.f1mvService.flagChange.getValue() === FlagsEnum.green) {
+      setTimeout(() => {
+        this.setLightColor(light, FlagsEnum.white);
+      }, 1000);
+    }
+
     this.lightGroupService.createGroup(this.syncedLightsArray);
   }
 

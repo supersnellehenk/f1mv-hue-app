@@ -39,7 +39,7 @@ export class LightGroupService {
   public getGroups() {
     this.http
       .get(
-        `http://${
+        `https://${
           this.discoveryService.bridgeIp
         }/api/${this.discoveryService.hueApiKey.getValue()}/groups`
       )
@@ -69,7 +69,7 @@ export class LightGroupService {
 
     this.http
       .post(
-        `http://${
+        `https://${
           this.discoveryService.bridgeIp
         }/api/${this.discoveryService.hueApiKey.getValue()}/groups`,
         {
@@ -93,7 +93,7 @@ export class LightGroupService {
     }
     this.http
       .put(
-        `http://${
+        `https://${
           this.discoveryService.bridgeIp
         }/api/${this.discoveryService.hueApiKey.getValue()}/groups/${
           this.group?.id
@@ -110,7 +110,7 @@ export class LightGroupService {
   public turnOnGroup() {
     this.http
       .put(
-        `http://${
+        `https://${
           this.discoveryService.bridgeIp
         }/api/${this.discoveryService.hueApiKey.getValue()}/groups/${
           this.group?.id
@@ -125,7 +125,7 @@ export class LightGroupService {
   public turnOffGroup() {
     this.http
       .put(
-        `http://${
+        `https://${
           this.discoveryService.bridgeIp
         }/api/${this.discoveryService.hueApiKey.getValue()}/groups/${
           this.group?.id
@@ -140,7 +140,7 @@ export class LightGroupService {
   public setGroupColor(color: number[], brightness: number = 77) {
     this.http
       .put(
-        `http://${
+        `https://${
           this.discoveryService.bridgeIp
         }/api/${this.discoveryService.hueApiKey.getValue()}/groups/${
           this.group?.id
@@ -158,7 +158,7 @@ export class LightGroupService {
     this.revertToWhiteDate = null;
     this.http
       .delete(
-        `http://${
+        `https://${
           this.discoveryService.bridgeIp
         }/api/${this.discoveryService.hueApiKey.getValue()}/groups/${
           this.group?.id
