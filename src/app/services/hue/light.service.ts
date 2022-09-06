@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AuthorizationService } from './authorization.service';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, interval } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Light } from './light';
 import { FlagsEnum } from '../../shared/enum/flags.enum';
-import addSeconds from 'date-fns/addSeconds';
 import { LightGroupService } from './light-group.service';
 import { F1mvService } from '../f1mv.service';
 
