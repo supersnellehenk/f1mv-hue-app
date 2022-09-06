@@ -99,39 +99,52 @@
       {{ this.isSubbed ? 'Unsub from' : 'Sub to' }} F1MV Timing
     </button>
   </div>
-  <div class="sync">
-    <button
-      mat-flat-button
-      (click)="this.syncAllLights()"
-      [disabled]="this.lightService.lights.length === 0">
-      Sync all lights
-    </button>
-    <button
-      mat-flat-button
-      (click)="this.unsyncAllLights()"
-      [disabled]="this.lightService.lights.length === 0">
-      Unsync all lights
-    </button>
-  </div>
-  <div class="row">
-    <p>Default brightness: {{ formatLabel(configService.brightness) }}%</p>
-    <mat-slider
-      min="0"
-      max="254"
-      thumbLabel="true"
-      [displayWith]="formatLabel"
-      [(ngModel)]="configService.brightness"></mat-slider>
-  </div>
-  <div class="row">
-    <p>Flag brightness: {{ formatLabel(configService.flagBrightness) }}%</p>
-    <mat-slider
-      min="0"
-      max="254"
-      thumbLabel="true"
-      [displayWith]="formatLabel"
-      [(ngModel)]="configService.flagBrightness"></mat-slider>
+  <div style="display: flex; flex-wrap: wrap">
+    <div class="row" style="margin-right: 20px">
+      <div class="sync">
+        <button
+          mat-flat-button
+          (click)="this.syncAllLights()"
+          [disabled]="this.lightService.lights.length === 0">
+          Sync all lights
+        </button>
+        <button
+          mat-flat-button
+          (click)="this.unsyncAllLights()"
+          [disabled]="this.lightService.lights.length === 0">
+          Unsync all lights
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row">
+        <p>Default state:</p>
+        <mat-slide-toggle [(ngModel)]="configService.defaultState">{{
+          configService.defaultState ? 'On' : 'Off'
+        }}</mat-slide-toggle>
+      </div>
+      <div class="row">
+        <p>Default brightness: {{ formatLabel(configService.brightness) }}%</p>
+        <mat-slider
+          min="0"
+          max="254"
+          thumbLabel="true"
+          [displayWith]="formatLabel"
+          [(ngModel)]="configService.brightness"></mat-slider>
+      </div>
+      <div class="row">
+        <p>Flag brightness: {{ formatLabel(configService.flagBrightness) }}%</p>
+        <mat-slider
+          min="0"
+          max="254"
+          thumbLabel="true"
+          [displayWith]="formatLabel"
+          [(ngModel)]="configService.flagBrightness"></mat-slider>
+      </div>
+    </div>
   </div>
 </div>
+
 <div class="light-container">
   <app-light
     *ngFor="let light of this.lightService.lights"

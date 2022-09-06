@@ -32,7 +32,7 @@ export class LightGroupService {
       if (this.revertToWhiteDate && this.revertToWhiteDate <= new Date()) {
         this.revertToWhiteDate = null;
 
-        this.setGroupColor(FlagsEnum.white);
+        this.setGroupState(ConfigService.defaultState, FlagsEnum.white);
       }
     });
   }
@@ -151,6 +151,27 @@ export class LightGroupService {
         }/action`,
         {
           on: true,
+          xy: color,
+          bri: brightness,
+        }
+      )
+      .subscribe();
+  }
+
+  public setGroupState(
+    on: boolean,
+    color: number[],
+    brightness: number = ConfigService.brightness
+  ) {
+    this.http
+      .put(
+        `https://${
+          this.discoveryService.bridgeIp
+        }/api/${this.discoveryService.hueApiKey.getValue()}/groups/${
+          this.group?.id
+        }/action`,
+        {
+          on: on,
           xy: color,
           bri: brightness,
         }
