@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
   public isProd = environment.production;
   public destroy$ = new Subject<void>();
   public isSubbed = false;
+  public configService = ConfigService;
 
   constructor(
     public discoveryService: AuthorizationService,
@@ -86,5 +87,9 @@ export class AppComponent implements OnInit {
   unsyncAllLights() {
     this.lightGroupService.setGroupColor(FlagsEnum.white);
     this.lightGroupService.editGroup([]);
+  }
+
+  formatLabel(value: number) {
+    return ((value / 255) * 100).toFixed(0);
   }
 }

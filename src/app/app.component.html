@@ -113,6 +113,24 @@
       Unsync all lights
     </button>
   </div>
+  <div class="row">
+    <p>Default brightness: {{ formatLabel(configService.brightness) }}%</p>
+    <mat-slider
+      min="0"
+      max="254"
+      thumbLabel="true"
+      [displayWith]="formatLabel"
+      [(ngModel)]="configService.brightness"></mat-slider>
+  </div>
+  <div class="row">
+    <p>Flag brightness: {{ formatLabel(configService.flagBrightness) }}%</p>
+    <mat-slider
+      min="0"
+      max="254"
+      thumbLabel="true"
+      [displayWith]="formatLabel"
+      [(ngModel)]="configService.flagBrightness"></mat-slider>
+  </div>
 </div>
 <div class="light-container">
   <app-light
