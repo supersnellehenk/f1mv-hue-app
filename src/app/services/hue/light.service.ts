@@ -6,6 +6,7 @@ import { Light } from './light';
 import { FlagsEnum } from '../../shared/enum/flags.enum';
 import { LightGroupService } from './light-group.service';
 import { F1mvService } from '../f1mv.service';
+import { ConfigService } from '../../shared/config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -41,7 +42,9 @@ export class LightService {
       this.setLightColor(
         light,
         this.f1mvService.flagChange.getValue(),
-        this.f1mvService.flagChange.getValue() === FlagsEnum.white ? 77 : 254
+        this.f1mvService.flagChange.getValue() === FlagsEnum.white
+          ? ConfigService.brightness
+          : ConfigService.flagBrightness
       );
       this.syncedLightsArray.push(light.id);
     }
@@ -108,7 +111,11 @@ export class LightService {
   }
 
   // brightness is 0-254
-  setLightColor(light: Light, color: number[], brightness: number = 77) {
+  setLightColor(
+    light: Light,
+    color: number[],
+    brightness: number = ConfigService.brightness
+  ) {
     this.http
       .put(
         `https://${

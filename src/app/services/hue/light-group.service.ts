@@ -5,6 +5,7 @@ import { LightGroup } from './group';
 import { BehaviorSubject, interval } from 'rxjs';
 import { FlagsEnum } from '../../shared/enum/flags.enum';
 import addSeconds from 'date-fns/addSeconds';
+import { ConfigService } from '../../shared/config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -137,7 +138,10 @@ export class LightGroupService {
       .subscribe();
   }
 
-  public setGroupColor(color: number[], brightness: number = 77) {
+  public setGroupColor(
+    color: number[],
+    brightness: number = ConfigService.brightness
+  ) {
     this.http
       .put(
         `https://${
@@ -169,7 +173,10 @@ export class LightGroupService {
       });
   }
 
-  flashGroup(flagColor: number[], brightness: number = 77) {
+  flashGroup(
+    flagColor: number[],
+    brightness: number = ConfigService.brightness
+  ) {
     this.setGroupColor(flagColor, brightness);
     this.revertToWhiteDate = addSeconds(new Date(), 5);
   }
