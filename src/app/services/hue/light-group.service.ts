@@ -5,6 +5,7 @@ import { LightGroup } from './group';
 import { BehaviorSubject, interval } from 'rxjs';
 import { FlagsEnum } from '../../shared/enum/flags.enum';
 import addSeconds from 'date-fns/addSeconds';
+import { ConfigService } from '../../shared/config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,7 @@ export class LightGroupService {
       if (this.revertToWhiteDate && this.revertToWhiteDate <= new Date()) {
         this.revertToWhiteDate = null;
 
-        this.setGroupColor(FlagsEnum.white);
+        this.setGroupState(ConfigService.defaultState, FlagsEnum.white);
       }
     });
   }
@@ -137,7 +138,10 @@ export class LightGroupService {
       .subscribe();
   }
 
-  public setGroupColor(color: number[], brightness: number = 77) {
+  public setGroupColor(
+    color: number[],
+    brightness: number = ConfigService.brightness
+  ) {
     this.http
       .put(
         `https://${
@@ -147,6 +151,27 @@ export class LightGroupService {
         }/action`,
         {
           on: true,
+          xy: color,
+          bri: brightness,
+        }
+      )
+      .subscribe();
+  }
+
+  public setGroupState(
+    on: boolean,
+    color: number[],
+    brightness: number = ConfigService.brightness
+  ) {
+    this.http
+      .put(
+        `https://${
+          this.discoveryService.bridgeIp
+        }/api/${this.discoveryService.hueApiKey.getValue()}/groups/${
+          this.group?.id
+        }/action`,
+        {
+          on: on,
           xy: color,
           bri: brightness,
         }
@@ -169,7 +194,10 @@ export class LightGroupService {
       });
   }
 
-  flashGroup(flagColor: number[], brightness: number = 77) {
+  flashGroup(
+    flagColor: number[],
+    brightness: number = ConfigService.brightness
+  ) {
     this.setGroupColor(flagColor, brightness);
     this.revertToWhiteDate = addSeconds(new Date(), 5);
   }
