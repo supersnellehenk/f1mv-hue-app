@@ -6,6 +6,7 @@ import { F1mvService } from './services/f1mv.service';
 import { interval, Subject, takeUntil } from 'rxjs';
 import { environment } from '../environments/environment';
 import { LightGroupService } from './services/hue/light-group.service';
+import { ConfigService } from './shared/config.service';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ export class AppComponent implements OnInit {
   public isProd = environment.production;
   public destroy$ = new Subject<void>();
   public isSubbed = false;
+  public configService = ConfigService;
 
   constructor(
     public discoveryService: AuthorizationService,
@@ -31,9 +33,15 @@ export class AppComponent implements OnInit {
       const lights = this.lightService.getSyncedLights();
       if (lights.length > 0) {
         if (flags === FlagsEnum.green) {
-          this.lightGroupService.flashGroup(flags, 254);
+          this.lightGroupService.flashGroup(
+            flags,
+            ConfigService.flagBrightness
+          );
         } else {
-          this.lightGroupService.setGroupColor(flags, 254);
+          this.lightGroupService.setGroupColor(
+            flags,
+            ConfigService.flagBrightness
+          );
         }
       }
     });
@@ -65,11 +73,13 @@ export class AppComponent implements OnInit {
     this.lightGroupService.editGroup(this.lightService.lights.map(l => l.id));
     const flag = this.f1mvService.flagChange.getValue();
     if (flag === FlagsEnum.green) {
-      this.lightGroupService.flashGroup(flag, 254);
+      this.lightGroupService.flashGroup(flag, ConfigService.flagBrightness);
     } else {
       this.lightGroupService.setGroupColor(
         flag,
-        this.f1mvService.flagChange.getValue() === FlagsEnum.white ? 77 : 254
+        this.f1mvService.flagChange.getValue() === FlagsEnum.white
+          ? ConfigService.brightness
+          : ConfigService.flagBrightness
       );
     }
   }
@@ -77,5 +87,9 @@ export class AppComponent implements OnInit {
   unsyncAllLights() {
     this.lightGroupService.setGroupColor(FlagsEnum.white);
     this.lightGroupService.editGroup([]);
+  }
+
+  formatLabel(value: number) {
+    return ((value / 255) * 100).toFixed(0);
   }
 }
