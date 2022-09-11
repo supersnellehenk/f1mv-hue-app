@@ -16,6 +16,7 @@ import { interval } from 'rxjs';
 })
 export class DigiFlagComponent implements OnInit {
   digiColor: string = 'black';
+  digiText: string = '';
   private trackStatus: TrackStatus = TrackStatus.ALL_CLEAR;
   private revertToWhiteDate: Date | null = null;
 
@@ -31,9 +32,11 @@ export class DigiFlagComponent implements OnInit {
             flagColor = Flag.GREEN;
             break;
           case TrackStatus.YELLOW:
+            flagColor = Flag.YELLOW;
+            break;
           case TrackStatus.SC_DEPLOYED:
           case TrackStatus.VSC_DEPLOYED:
-            flagColor = Flag.YELLOW;
+            flagColor = '#f9ed45';
             break;
           case TrackStatus.RED:
             flagColor = Flag.RED;
@@ -75,9 +78,13 @@ export class DigiFlagComponent implements OnInit {
   get textFlag(): boolean {
     switch (this.trackStatus) {
       case TrackStatus.SC_DEPLOYED:
+        this.digiText = 'SC';
+        return true;
       case TrackStatus.VSC_DEPLOYED:
+        this.digiText = 'VSC';
         return true;
       default:
+        this.digiText = '';
         return false;
     }
   }
