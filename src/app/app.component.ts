@@ -48,6 +48,8 @@ export class AppComponent implements OnInit {
         }
       }
     });
+
+    this.silentAudio();
   }
 
   public unsubToApi() {
@@ -103,5 +105,16 @@ export class AppComponent implements OnInit {
       height: '100%',
       width: '100%',
     });
+  }
+
+  silentAudio(ctx: AudioContext | null = null): any {
+    ctx = ctx || new AudioContext();
+
+    let source = ctx.createConstantSource();
+    let gainNode = ctx.createGain();
+    gainNode.gain.value = 0.001; // required to prevent popping on start
+    source.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    source.start();
   }
 }
