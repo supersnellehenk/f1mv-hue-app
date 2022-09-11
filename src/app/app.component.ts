@@ -7,6 +7,8 @@ import { interval, Subject, takeUntil } from 'rxjs';
 import { environment } from '../environments/environment';
 import { LightGroupService } from './services/hue/light-group.service';
 import { ConfigService } from './shared/config.service';
+import { DigiFlagComponent } from './components/digi-flag/digi-flag.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
@@ -25,7 +27,8 @@ export class AppComponent implements OnInit {
     public discoveryService: AuthorizationService,
     public lightService: LightService,
     public lightGroupService: LightGroupService,
-    public f1mvService: F1mvService
+    public f1mvService: F1mvService,
+    public dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -91,5 +94,14 @@ export class AppComponent implements OnInit {
 
   formatLabel(value: number) {
     return ((value / 255) * 100).toFixed(0);
+  }
+
+  openDialog() {
+    this.dialog.open(DigiFlagComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      height: '100%',
+      width: '100%',
+    });
   }
 }

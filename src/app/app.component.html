@@ -147,6 +147,14 @@
       </div>
     </div>
   </div>
+  <button
+    mat-flat-button
+    (click)="this.openDialog()"
+    color="primary"
+    [disabled]="!this.isSubbed"
+    style="margin-right: 8px; margin-bottom: 20px">
+    Open digi flag
+  </button>
 </div>
 
 <div class="light-container">
