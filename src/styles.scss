@@ -9,3 +9,12 @@ body {
   padding: 8px;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+
+mat-dialog-container {
+  background-color: transparent !important;
+  padding: 0 !important;
+}
+
+.cdk-global-scrollblock {
+  overflow-y: hidden !important;
+}
