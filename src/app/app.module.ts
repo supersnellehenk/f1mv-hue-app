@@ -17,6 +17,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DigiFlagFullComponent } from './components/digi-flag/full/full.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DigiFlagComponent } from './components/digi-flag/digi-flag.component';
+import { DigiFlagTextComponent } from './components/digi-flag/text/text.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { DigiFlagComponent } from './components/digi-flag/digi-flag.component';
     LightComponent,
     DigiFlagFullComponent,
     DigiFlagComponent,
+    DigiFlagTextComponent,
   ],
   imports: [
     BrowserModule,
