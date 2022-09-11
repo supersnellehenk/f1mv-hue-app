@@ -14,11 +14,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { DigiFlagComponent } from './components/digi-flag/digi-flag.component';
+import { DigiFlagFullComponent } from './components/digi-flag/full/full.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { DigiFlagComponent } from './components/digi-flag/digi-flag.component';
 
 @NgModule({
-  declarations: [AppComponent, LightComponent, DigiFlagComponent],
+  declarations: [
+    AppComponent,
+    LightComponent,
+    DigiFlagFullComponent,
+    DigiFlagComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
