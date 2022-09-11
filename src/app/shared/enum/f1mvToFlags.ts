@@ -19,7 +19,9 @@ export enum TrackStatus {
   ALL_CLEAR = 'AllClear',
   YELLOW = 'Yellow',
   VSC_DEPLOYED = 'VSCDeployed',
+  VSC_ENDING = 'VSCEnding',
   SC_DEPLOYED = 'SCDeployed',
+  SC_ENDING = 'SCEnding',
   RED = 'Red',
 }
 
@@ -37,7 +39,9 @@ export const trackStatusToFlagMapping: { [trackStatus in TrackStatus]: Flag } =
     [TrackStatus.ALL_CLEAR]: Flag.GREEN,
     [TrackStatus.YELLOW]: Flag.YELLOW,
     [TrackStatus.VSC_DEPLOYED]: Flag.YELLOW,
+    [TrackStatus.VSC_ENDING]: Flag.YELLOW,
     [TrackStatus.SC_DEPLOYED]: Flag.YELLOW,
+    [TrackStatus.SC_ENDING]: Flag.YELLOW,
   };
 
 export const flagToHueColorMapping: { [flag in Flag]: number[] } = {

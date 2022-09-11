@@ -35,7 +35,9 @@ export class DigiFlagComponent implements OnInit {
             flagColor = Flag.YELLOW;
             break;
           case TrackStatus.SC_DEPLOYED:
+          case TrackStatus.SC_ENDING:
           case TrackStatus.VSC_DEPLOYED:
+          case TrackStatus.VSC_ENDING:
             flagColor = '#f9ed45';
             break;
           case TrackStatus.RED:
@@ -78,9 +80,11 @@ export class DigiFlagComponent implements OnInit {
   get textFlag(): boolean {
     switch (this.trackStatus) {
       case TrackStatus.SC_DEPLOYED:
+      case TrackStatus.SC_ENDING:
         this.digiText = 'SC';
         return true;
       case TrackStatus.VSC_DEPLOYED:
+      case TrackStatus.VSC_ENDING:
         this.digiText = 'VSC';
         return true;
       default:
