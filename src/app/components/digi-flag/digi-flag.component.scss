@@ -1,0 +1,21 @@
+.digi-flag-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  background-color: black;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+app-digi-flag-full {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

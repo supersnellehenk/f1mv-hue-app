@@ -41,15 +41,15 @@ export class LightService {
     } else {
       this.setLightColor(
         light,
-        this.f1mvService.flagChange.getValue(),
-        this.f1mvService.flagChange.getValue() === FlagsEnum.white
+        this.f1mvService.flagChange$.getValue(),
+        this.f1mvService.flagChange$.getValue() === FlagsEnum.white
           ? ConfigService.brightness
           : ConfigService.flagBrightness
       );
       this.syncedLightsArray.push(light.id);
     }
 
-    if (this.f1mvService.flagChange.getValue() === FlagsEnum.green) {
+    if (this.f1mvService.flagChange$.getValue() === FlagsEnum.green) {
       setTimeout(() => {
         this.setLightColor(light, FlagsEnum.white);
       }, 1000);

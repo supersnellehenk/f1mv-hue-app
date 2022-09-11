@@ -18,6 +18,8 @@ export class TrackStatusToFlags {
 export enum TrackStatus {
   ALL_CLEAR = 'AllClear',
   YELLOW = 'Yellow',
+  VSC_DEPLOYED = 'VSCDeployed',
+  SC_DEPLOYED = 'SCDeployed',
   RED = 'Red',
 }
 
@@ -34,6 +36,8 @@ export const trackStatusToFlagMapping: { [trackStatus in TrackStatus]: Flag } =
     [TrackStatus.RED]: Flag.RED,
     [TrackStatus.ALL_CLEAR]: Flag.GREEN,
     [TrackStatus.YELLOW]: Flag.YELLOW,
+    [TrackStatus.VSC_DEPLOYED]: Flag.YELLOW,
+    [TrackStatus.SC_DEPLOYED]: Flag.YELLOW,
   };
 
 export const flagToHueColorMapping: { [flag in Flag]: number[] } = {
@@ -43,3 +47,8 @@ export const flagToHueColorMapping: { [flag in Flag]: number[] } = {
   [Flag.YELLOW]: FlagsEnum.yellow,
   [Flag.PURPLE]: FlagsEnum.purple,
 };
+
+export interface TrackStatusMessage {
+  Status: string;
+  Message: TrackStatus;
+}
