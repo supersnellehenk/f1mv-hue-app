@@ -142,6 +142,10 @@ export class LightGroupService {
     color: number[],
     brightness: number = ConfigService.brightness
   ) {
+    if (color !== FlagsEnum.green) {
+      this.revertToWhiteDate = null;
+    }
+
     this.http
       .put(
         `https://${
@@ -163,6 +167,10 @@ export class LightGroupService {
     color: number[],
     brightness: number = ConfigService.brightness
   ) {
+    if (color !== FlagsEnum.green) {
+      this.revertToWhiteDate = null;
+    }
+
     this.http
       .put(
         `https://${
