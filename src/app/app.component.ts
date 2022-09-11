@@ -7,7 +7,7 @@ import { interval, Subject, takeUntil } from 'rxjs';
 import { environment } from '../environments/environment';
 import { LightGroupService } from './services/hue/light-group.service';
 import { ConfigService } from './shared/config.service';
-import { DigiFlagComponent } from './components/digi-flag/digi-flag.component';
+import { DigiFlagFullComponent } from './components/digi-flag/full/full.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -99,7 +99,7 @@ export class AppComponent implements OnInit {
   }
 
   openDialog() {
-    this.dialog.open(DigiFlagComponent, {
+    this.dialog.open(DigiFlagFullComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
       height: '100%',

@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { F1mvService } from '../../services/f1mv.service';
-import { Flag } from '../../shared/enum/f1mvToFlags';
-import { FlagsEnum } from '../../shared/enum/flags.enum';
+import { F1mvService } from '../../../services/f1mv.service';
+import { Flag } from '../../../shared/enum/f1mvToFlags';
+import { FlagsEnum } from '../../../shared/enum/flags.enum';
 import { interval } from 'rxjs';
-import { ConfigService } from '../../shared/config.service';
 import addSeconds from 'date-fns/addSeconds';
 
 @Component({
-  selector: 'app-digi-flag',
-  templateUrl: './digi-flag.component.html',
-  styleUrls: ['./digi-flag.component.scss'],
+  selector: 'app-digi-flag-full',
+  templateUrl: './full.component.html',
+  styleUrls: ['./full.component.scss'],
 })
-export class DigiFlagComponent implements OnInit {
+export class DigiFlagFullComponent implements OnInit {
   digiColor: string = 'black';
   private revertToWhiteDate: Date | null = null;
 
