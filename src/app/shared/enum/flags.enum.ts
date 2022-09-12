@@ -5,4 +5,5 @@ export class FlagsEnum {
   public static readonly yellow = [0.49, 0.45];
   public static readonly purple = [0.23, 0.08];
   public static readonly white = [0.4575, 0.4099];
+  public static readonly orange = [0.57, 0.4];
 }
