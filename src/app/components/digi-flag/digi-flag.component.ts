@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { F1mvService } from '../../services/f1mv.service';
-import { Flag } from '../../shared/enum/f1mvToFlags';
 import { FlagsEnum } from '../../shared/enum/flags.enum';
-import { interval } from 'rxjs';
-import { ConfigService } from '../../shared/config.service';
+import {
+  Flag,
+  TrackStatus,
+  TrackStatusMessage,
+} from '../../shared/enum/f1mvToFlags';
 import addSeconds from 'date-fns/addSeconds';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-digi-flag',
@@ -13,40 +16,46 @@ import addSeconds from 'date-fns/addSeconds';
 })
 export class DigiFlagComponent implements OnInit {
   digiColor: string = 'black';
+  digiText: string = '';
+  private trackStatus: TrackStatus = TrackStatus.ALL_CLEAR;
   private revertToWhiteDate: Date | null = null;
 
   constructor(private f1mvService: F1mvService) {}
 
   ngOnInit() {
-    this.f1mvService.flagChange.subscribe((flags: number[]) => {
-      let flagColor = this.digiColor;
+    this.f1mvService.lastMessage$.subscribe(
+      (message: TrackStatusMessage | null) => {
+        let flagColor = this.digiColor;
 
-      switch (flags) {
-        case FlagsEnum.green:
-          flagColor = Flag.GREEN;
-          break;
-        case FlagsEnum.yellow:
-          flagColor = Flag.YELLOW;
-          break;
-        case FlagsEnum.red:
-          flagColor = Flag.RED;
-          break;
-        case FlagsEnum.blue:
-          flagColor = Flag.BLUE;
-          break;
-        case FlagsEnum.purple:
-          flagColor = Flag.PURPLE;
-          break;
+        switch (message?.Message) {
+          case TrackStatus.ALL_CLEAR:
+            flagColor = Flag.GREEN;
+            break;
+          case TrackStatus.YELLOW:
+            flagColor = Flag.YELLOW;
+            break;
+          case TrackStatus.SC_DEPLOYED:
+          case TrackStatus.SC_ENDING:
+          case TrackStatus.VSC_DEPLOYED:
+          case TrackStatus.VSC_ENDING:
+            flagColor = '#f9ed45';
+            break;
+          case TrackStatus.RED:
+            flagColor = Flag.RED;
+            break;
+        }
+
+        if (flagColor === Flag.GREEN) {
+          this.revertToWhiteDate = addSeconds(new Date(), 5);
+        } else {
+          this.revertToWhiteDate = null;
+        }
+
+        this.trackStatus =
+          (message?.Message as TrackStatus) ?? TrackStatus.ALL_CLEAR;
+        this.digiColor = flagColor;
       }
-
-      if (flagColor === Flag.GREEN) {
-        this.revertToWhiteDate = addSeconds(new Date(), 5);
-      } else {
-        this.revertToWhiteDate = null;
-      }
-
-      this.digiColor = flagColor;
-    });
+    );
 
     const interval$ = interval(1000);
     interval$.subscribe(() => {
@@ -55,5 +64,32 @@ export class DigiFlagComponent implements OnInit {
         this.digiColor = 'black';
       }
     });
+  }
+
+  get fullFlag(): boolean {
+    switch (this.trackStatus) {
+      case TrackStatus.ALL_CLEAR:
+      case TrackStatus.YELLOW:
+      case TrackStatus.RED:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  get textFlag(): boolean {
+    switch (this.trackStatus) {
+      case TrackStatus.SC_DEPLOYED:
+      case TrackStatus.SC_ENDING:
+        this.digiText = 'SC';
+        return true;
+      case TrackStatus.VSC_DEPLOYED:
+      case TrackStatus.VSC_ENDING:
+        this.digiText = 'VSC';
+        return true;
+      default:
+        this.digiText = '';
+        return false;
+    }
   }
 }
