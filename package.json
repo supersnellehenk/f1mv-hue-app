@@ -2,11 +2,11 @@
   "name": "f1mv-hue-app",
   "version": "0.0.0",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
+    "preinstall": "npm install -g pnpm && npx only-allow pnpm",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build -c production",
-    "cloudflare-build": "npm install -g pnpm && pnpm i && pnpm run build",
+    "cloudflare-build": "pnpm i && pnpm run build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
