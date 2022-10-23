@@ -5,7 +5,7 @@
     "preinstall": "npx only-allow pnpm",
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "npx pnpm i --store=node_modules/.pnpm-store && ng build -c production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
