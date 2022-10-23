@@ -5,7 +5,8 @@
     "preinstall": "npx only-allow pnpm",
     "ng": "ng",
     "start": "ng serve",
-    "build": "npx pnpm i --store=node_modules/.pnpm-store && ng build -c production",
+    "build": "ng build -c production",
+    "cloudflare-build": "npm install -g pnpm && pnpm i && pnpm run build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
