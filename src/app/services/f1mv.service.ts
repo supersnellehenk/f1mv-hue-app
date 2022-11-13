@@ -22,7 +22,14 @@ export class F1mvService {
     this.f1mvUrl = localStorage.getItem('f1mvUrl') || 'http://localhost:10101';
   }
 
+  private removeTrailingSlash(str: string) {
+    return str.replace(/\/+$/, '');
+  }
+
   public consumeApi() {
+    this.f1mvUrl = this.removeTrailingSlash(
+      this.f1mvUrl.replace('api/graphql', '')
+    );
     return this.http.get(`${this.f1mvUrl}/api/v1/live-timing/TrackStatus`).pipe(
       tap((resp: any) => {
         const message = resp as TrackStatusMessage;
