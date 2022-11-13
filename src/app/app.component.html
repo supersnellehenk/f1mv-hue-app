@@ -93,7 +93,6 @@
     <button
       mat-flat-button
       color="primary"
-      [disabled]="this.lightService.lights.length === 0"
       (click)="isSubbed ? this.unsubToApi() : this.subToApi()"
       style="margin-right: 8px">
       {{ this.isSubbed ? 'Unsub from' : 'Sub to' }} F1MV Timing
