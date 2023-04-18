@@ -98,6 +98,7 @@
       {{ this.isSubbed ? 'Unsub from' : 'Sub to' }} F1MV Timing
     </button>
   </div>
+  {{ this.f1mvService.lastMessage$.getValue()?.Message }}
   <div style="display: flex; flex-wrap: wrap">
     <div class="row" style="margin-right: 20px">
       <div class="sync">

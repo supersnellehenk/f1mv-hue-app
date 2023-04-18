@@ -30,23 +30,37 @@ export class F1mvService {
     this.f1mvUrl = this.removeTrailingSlash(
       this.f1mvUrl.replace('api/graphql', '')
     );
-    return this.http.get(`${this.f1mvUrl}/api/v1/live-timing/TrackStatus`).pipe(
-      tap((resp: any) => {
-        const message = resp as TrackStatusMessage;
+    return this.http
+      .post(
+        `${this.f1mvUrl}/api/graphql`,
+        JSON.stringify({
+          query: `query LiveTimingState {
+                            liveTimingState {
+                                TrackStatus
+                            }
+                        }`,
+          operationName: 'LiveTimingState',
+        }),
+        { headers: { 'Content-Type': 'application/json' } }
+      )
+      .pipe(
+        tap((resp: any) => {
+          const message = resp.data.liveTimingState
+            .TrackStatus as TrackStatusMessage;
 
-        if (JSON.stringify(message) !== JSON.stringify(this.lastMessage)) {
-          if (message.Message in trackStatusToFlagMapping) {
-            const flag: Flag = trackStatusToFlagMapping[message.Message];
-            const flagColor: number[] = flagToHueColorMapping[flag];
-            this.flagChange$.next(flagColor);
-          } else if (!this.lastMessage) {
-            this.flagChange$.next(FlagsEnum.yellow);
+          if (JSON.stringify(message) !== JSON.stringify(this.lastMessage)) {
+            if (message.Message in trackStatusToFlagMapping) {
+              const flag: Flag = trackStatusToFlagMapping[message.Message];
+              const flagColor: number[] = flagToHueColorMapping[flag];
+              this.flagChange$.next(flagColor);
+            } else if (!this.lastMessage) {
+              this.flagChange$.next(FlagsEnum.yellow);
+            }
+
+            this.lastMessage = message;
+            this.lastMessage$.next(message);
           }
-
-          this.lastMessage = message;
-          this.lastMessage$.next(message);
-        }
-      })
-    );
+        })
+      );
   }
 }
